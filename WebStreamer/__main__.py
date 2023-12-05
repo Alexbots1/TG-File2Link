@@ -1,18 +1,16 @@
-# This file is a part of FileStreamBot
-
+# import os
 import sys
+import glob
 import asyncio
 import logging
-import traceback
-import logging.handlers as handlers
+import importlib
+from pathlib import Path
+from pyrogram import idle
+from .bot import StreamBot
 from .vars import Var
 from aiohttp import web
-from pyrogram import idle
-from WebStreamer.bot import StreamBot
-from WebStreamer.server import web_server
 from .server import web_server
-from WebStreamer.bot.clients import initialize_clients
-
+from .utils.keepalive import 
 
 logging.basicConfig(
     level=logging.INFO,
