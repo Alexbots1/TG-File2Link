@@ -10,7 +10,7 @@ from aiohttp import web
 from pyrogram import idle
 from WebStreamer.bot import StreamBot
 from WebStreamer.server import web_server
-from WebStreamer.utils import ping_server
+from .server import web_server
 from WebStreamer.bot.clients import initialize_clients
 
 
