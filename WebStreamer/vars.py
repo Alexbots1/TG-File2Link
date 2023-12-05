@@ -19,7 +19,6 @@ class Var(object):
     OWNER_ID = int(getenv('OWNER_ID', '797848243'))
     NO_PORT = bool(getenv('NO_PORT', False))
     
-        ON_HEROKU = False
     FQDN = str(getenv('FQDN', BIND_ADRESS)) if not ON_HEROKU or getenv('FQDN') else APP_NAME+'.herokuapp.com'
     URL = "https://{}/".format(FQDN) if ON_HEROKU or NO_PORT else \
         "http://{}:{}/".format(FQDN, PORT)
