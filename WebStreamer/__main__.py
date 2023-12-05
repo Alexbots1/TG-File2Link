@@ -16,17 +16,8 @@ from .utils.keepalive import ping_server
 ppath = "WebStreamer/bot/plugins/*.py"
 files = glob.glob(ppath)
 
-logging.getLogger("aiohttp").setLevel(logging.ERROR)
-logging.getLogger("pyrogram").setLevel(logging.ERROR)
-logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
-
-server = web.AppRunner(web_server())
-
-#if sys.version_info[1] > 9:
-#    loop = asyncio.new_event_loop()
-#    asyncio.set_event_loop(loop)
-#else:
 loop = asyncio.get_event_loop()
+
 
 async def start_services():
     print()
