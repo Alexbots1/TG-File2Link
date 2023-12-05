@@ -20,39 +20,41 @@ loop = asyncio.get_event_loop()
 
 
 async def start_services():
-    print()
-    if Var.SECONDARY:
-        print("------------------ Starting as Secondary Server ------------------")
-    else:
-        print("------------------- Starting as Primary Server -------------------")
-    print()
-    print("-------------------- Initializing Telegram Bot --------------------")
+    print('\n')
+    print('------------------- Initalizing Telegram Bot -------------------')
     await StreamBot.start()
-    bot_info = await StreamBot.get_me()
-    StreamBot.id = bot_info.id
-    StreamBot.username = bot_info.username
-    StreamBot.fname=bot_info.first_name
-    print("------------------------------ DONE ------------------------------")
-    print()
-    print("---------------------- Initializing Clients ----------------------")
-    await initialize_clients()
-    print("------------------------------ DONE ------------------------------")
-    if Var.KEEP_ALIVE:
-        print("------------------ Starting Keep Alive Service ------------------")
-        print()
-        asyncio.create_task(ping_server())
-    print()
-    print("--------------------- Initializing Web Server ---------------------")
-    await server.setup()
-    await web.TCPSite(server, Var.BIND_ADDRESS, Var.PORT).start()
-    print("------------------------------ DONE ------------------------------")
-    print()
-    print("------------------------- Service Started -------------------------")
-    print("                        bot =>> {}".format(bot_info.first_name))
-    if bot_info.dc_id:
-        print("                        DC ID =>> {}".format(str(bot_info.dc_id)))
-    print(" URL =>> {}".format(Var.URL))
-    print("------------------------------------------------------------------")
+    print('\n')
+    print('---------------------- DONE ----------------------')
+    print('\n')
+    print('------------------- Importing -------------------')
+    for name in files:
+        with open(name) as a:
+            patt = Path(a.name)
+            plugin_name = patt.stem.replace(".py", "")
+            plugins_dir = Path(f"WebStreamer/bot/plugins/{plugin_name}.py")
+            import_path = ".plugins.{}".format(plugin_name)
+            spec = importlib.util.spec_from_file_location(import_path, plugins_dir)
+            load = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(load)
+            sys.modules["WebStreamer.bot.plugins." + plugin_name] = load
+            print("Imported => " + plugin_name)
+    print('\n')
+    print('------------------- Initalizing Web Server -------------------')
+    app = web.AppRunner(await web_server())
+    await app.setup()
+    bind_address = "0.0.0.0" if Var.ON_HEROKU else Var.FQDN
+    await web.TCPSite(app, bind_address, Var.PORT).start()
+    print('\n')
+    print('----------------------- Service Started -----------------------')
+    print('                        bot =>> {}'.format((await StreamBot.get_me()).first_name))
+    print('                        server ip =>> {}:{}'.format(bind_address, Var.PORT))
+    if Var.ON_HEROKU:
+        print('                        app runnng on =>> {}'.format(Var.FQDN))
+    if Var.ON_HEROKU:
+        print('------------------ Starting Keep Alive Service ------------------')
+        print('\n')
+        await asyncio.create_task(ping_server())
+    print('---------------------------------------------------------------')
     await idle()
 
 if __name__ == '__main__':
