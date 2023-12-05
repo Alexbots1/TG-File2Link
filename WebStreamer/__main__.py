@@ -11,7 +11,7 @@ from .bot import StreamBot
 from .vars import Var
 from aiohttp import web
 from .server import web_server
-from .utils.keepalive import 
+from .utils.keepalive import ping_server
 
 logging.basicConfig(
     level=logging.INFO,
