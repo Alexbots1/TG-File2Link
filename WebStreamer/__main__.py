@@ -13,12 +13,8 @@ from aiohttp import web
 from .server import web_server
 from .utils.keepalive import ping_server
 
-logging.basicConfig(
-    level=logging.INFO,
-    datefmt="%d/%m/%Y %H:%M:%S",
-    format='[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler(stream=sys.stdout),
-              handlers.RotatingFileHandler("streambot.log", mode="a", maxBytes=104857600, backupCount=2, encoding="utf-8")],)
+ppath = "WebStreamer/bot/plugins/*.py"
+files = glob.glob(ppath)
 
 logging.getLogger("aiohttp").setLevel(logging.ERROR)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
